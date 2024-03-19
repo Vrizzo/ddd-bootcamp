@@ -2,8 +2,8 @@
 import express, { Request, Response } from 'express';
 import aircraftRouter from './routers/aircraftRouter';
 import seatTypeRouter from './routers/seatTypeRouter';
-import {AircraftSql} from "./database/Aircraft";
-import {SeatTypeSql} from "./database/SeatType";
+import {AircraftSql} from "./active-records/Aircraft";
+import {SeatTypeSql} from "./active-records/SeatType";
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(express.json())

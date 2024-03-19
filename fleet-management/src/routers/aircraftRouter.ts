@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {Aircraft, AircraftSql} from "../database/Aircraft";
+import {Aircraft, AircraftSql} from "../active-records/Aircraft";
 
 export const defaultRoute = Router();
 

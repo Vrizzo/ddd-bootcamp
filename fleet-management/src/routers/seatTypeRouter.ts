@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {SeatType, SeatTypeSql} from "../database/SeatType";
+import {SeatType, SeatTypeSql} from "../active-records/SeatType";
 
 export const defaultRoute = Router();
 
