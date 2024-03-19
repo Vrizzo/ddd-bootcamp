@@ -1,10 +1,7 @@
 import {Router} from 'express';
-import {Aircraft} from "../database/Aircraft";
-import {AircraftRepository} from "../database/AircraftRepository";
-
+import {Aircraft, AircraftSql} from "../database/Aircraft";
 
 export const defaultRoute = Router();
-
 
 defaultRoute.get('/', (req, res) => {
     res.send("What's up doc ?!");
@@ -14,12 +11,10 @@ let router = express.Router();
 
 /* GET users listing. */
 router.get('/aircraft', function (req: any, res: any) {
-
-    new AircraftRepository().fetch().then((aircrafts) => {
+    AircraftSql.findAll().then((aircrafts) => {
         console.log(aircrafts)
         return res.send(JSON.stringify(aircrafts));
-    })
-        .catch((error) => {
+    }).catch((error) => {
             console.error('Promise rejected with error: ' + error);
             return res.status(500).send();
         });
@@ -27,44 +22,67 @@ router.get('/aircraft', function (req: any, res: any) {
 
 });
 
-router.post('/aircraft', function (req: any, res: any) {
-    console.log("post");
-    let aircraft = req.body as Aircraft;
-    console.log(aircraft);
-
-    new AircraftRepository().insert(aircraft).then((result) => {
-        res.send(JSON.stringify(aircraft));
-    })
-        .catch((error) => {
-            console.error('Promise rejected with error: ' + error);
+router.post('/aircraft', async function (req: any, res: any) {
+    try {
+        let aircraft = AircraftSql.build(req.body as Aircraft);
+        console.log(aircraft);
+        aircraft.set({
+            version: "1"
         });
 
+        await aircraft.save();
+        return res.send(JSON.stringify(aircraft));
+    } catch (e) {
+        console.error(e)
+        return res.status(400).send();
+    }
+});
+
+router.put('/aircraft', async function (req: any, res: any) {
+    try {
+        console.log('put');
+        const aircraft = req.body as Aircraft
+        let persistedAircraft = await AircraftSql.findOne({
+            where: {
+                model: aircraft.model,
+                version: aircraft.version
+            }
+        });
+
+        if (!persistedAircraft) {
+            console.error(`unable to find ${aircraft.model} version ${aircraft.version}`)
+            return res.status(400).send();
+        }
+        persistedAircraft.set(aircraft);
+        persistedAircraft = await persistedAircraft.increment('version', {by: 1});
+        console.log(persistedAircraft);
+        await persistedAircraft.save();
+        return res.send(JSON.stringify(persistedAircraft));
+    } catch (e) {
+        console.error(e)
+        return res.status(400).send();
+    }
 
 });
 
-router.put('/aircraft', function (req: any, res: any) {
-    console.log("put");
-    let aircraft = req.body as Aircraft;
-    console.log(aircraft);
+router.delete('/aircraft', async function (req: any, res: any) {
 
-    new AircraftRepository().insert(aircraft).then((result) => {
-        res.send(JSON.stringify(aircraft));
-    })
-        .catch((error) => {
-            console.error('Promise rejected with error: ' + error);
+    try {
+        console.log('delete');
+        const aircraft = req.body as Aircraft
+        let persistedAircraft = await AircraftSql.destroy({
+            where: {
+                model: aircraft.model,
+                version: aircraft.version
+            }
         });
 
 
-});
-
-router.delete('/aircraft', function (req: any, res: any) {
-
-    new AircraftRepository().delete('test').then((result) => {
-        res.json('ok');
-    })
-        .catch((error) => {
-            console.error('Promise rejected with error: ' + error);
-        });
+        return res.send("deleted");
+    } catch (e) {
+        console.error(e)
+        return res.status(400).send();
+    }
 
 
 });

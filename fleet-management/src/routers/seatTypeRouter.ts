@@ -1,8 +1,5 @@
 import {Router} from 'express';
-import {Aircraft} from "../database/Aircraft";
-import {PoolFactory} from "../database/Pool";
-import {SeatTypeRepository} from "../database/SeatTypeRepository";
-import {SeatType} from "../database/SeatType";
+import {SeatType, SeatTypeSql} from "../database/SeatType";
 
 export const defaultRoute = Router();
 
@@ -15,7 +12,7 @@ let router = express.Router();
 
 /* GET users listing. */
 router.get('/seat-type', function (req: any, res: any) {
-    new SeatTypeRepository().fetch().then((seatTypes) => {
+    SeatTypeSql.findAll().then((seatTypes) => {
         console.log(seatTypes)
         return res.send(JSON.stringify(seatTypes));
     })
@@ -27,45 +24,68 @@ router.get('/seat-type', function (req: any, res: any) {
 
 });
 
-router.post('/seat-type', function (req: any, res: any) {
-    console.log("post");
-    let seatType = req.body as SeatType;
-    console.log(seatType);
-
-    new SeatTypeRepository().insert(seatType).then((result) => {
-        res.send(JSON.stringify(seatType));
-    })
-        .catch((error) => {
-            console.error('Promise rejected with error: ' + error);
+router.post('/seat-type', async function (req: any, res: any) {
+    try {
+        let seatType = SeatTypeSql.build(req.body as SeatType);
+        console.log(seatType);
+        seatType.set({
+            version: "1"
         });
 
+        await seatType.save();
+        return res.send(JSON.stringify(seatType));
+    } catch (e) {
+        console.error(e)
+        return res.status(400).send();
+    }
 
 });
 
-router.put('/seat-type', function (req: any, res: any) {
-    console.log("put");
-    let seatType = req.body as SeatType;
-    console.log(seatType);
-
-    new SeatTypeRepository().insert(seatType).then((result) => {
-        res.send(JSON.stringify(seatType));
-    })
-        .catch((error) => {
-            console.error('Promise rejected with error: ' + error);
+router.put('/seat-type', async function (req: any, res: any) {
+    try {
+        console.log('put');
+        const seatType = req.body as SeatType
+        let persistedSeatType = await SeatTypeSql.findOne({
+            where: {
+                id: seatType.id,
+                version: seatType.version
+            }
         });
 
+        if (!persistedSeatType) {
+            console.error(`unable to find ${seatType.id} version ${seatType.version}`)
+            return res.status(400).send();
+        }
+        persistedSeatType.set(seatType);
+        persistedSeatType = await persistedSeatType.increment('version', {by: 1});
+        console.log(persistedSeatType);
+        await persistedSeatType.save();
+        return res.send(JSON.stringify(persistedSeatType));
+    } catch (e) {
+        console.error(e)
+        return res.status(400).send();
+    }
 
 });
 
-router.delete('/seat-type', function (req: any, res: any) {
+router.delete('/seat-type', async function (req: any, res: any) {
 
-    new SeatTypeRepository().delete('test').then((result) => {
-        res.json('ok');
-    })
-        .catch((error) => {
-            console.error('Promise rejected with error: ' + error);
+    try {
+        console.log('delete');
+        const seatType = req.body as SeatType
+        await SeatTypeSql.destroy({
+            where: {
+                id: seatType.id,
+                version: seatType.version
+            }
         });
 
+
+        return res.send("deleted");
+    } catch (e) {
+        console.error(e)
+        return res.status(400).send();
+    }
 
 });
 

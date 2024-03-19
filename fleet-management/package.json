@@ -14,8 +14,11 @@
     "morgan": "~1.9.1",
     "openrecord": "^2.11.1",
     "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
     "postgresql-client": "^2.10.6",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "sequelize": "^6.37.1",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
