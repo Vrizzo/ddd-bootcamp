@@ -44,7 +44,10 @@ export const SeatTypeSql = sequelize.define('SeatType', {
         // allowNull defaults to true
     },
     weight: {
-        type: DataTypes.DOUBLE
+        type: DataTypes.DOUBLE,
+        get() {
+            const rawValue = this.getDataValue('weight');
+        }
         // allowNull defaults to true
     },
     productionDate: {

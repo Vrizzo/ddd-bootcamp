@@ -1,0 +1,10 @@
+POST http://localhost:3000/fleet-unit
+Accept: text/json
+{
+  "tailNumber": "E731",
+  "model": "Boeing 737-300",
+  "manufacturingDate": "20/05/84",
+  "purchaseDate": "20/06/84",
+  "nextMaintenanceDate": "20/05/24",
+  "cabinLoyoutId": C3001,
+}

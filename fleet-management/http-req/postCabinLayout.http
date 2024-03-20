@@ -1,0 +1,15 @@
+POST http://localhost:3000/cabin-layout
+Accept: text/json
+{
+  "id": "C3007",
+  "length": 10,
+  "width": 340,
+  "layout": [
+    {
+      "seatType": "BIZ-ADV",
+      "aisleWidth": 120,
+      "extraSpace": 101,
+      "cabinCell": ["Seat","Seat","Aisle","Seat","Seat"]
+    }
+  ]
+}
