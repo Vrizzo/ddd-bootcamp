@@ -7,13 +7,13 @@ export type FleetUnit = {
     manufacturingDate: string
     purchaseDate: string
     nextMaintenanceDate: string
-    cabinLoyoutId: string
+    cabinLayoutId: string
 }
 
 
 const sequelize = new Sequelize('postgresql://fleetops_user:S3cret@localhost:5432/fleet_management?schema=public') // Example for postgres
 
-export const CabinLayoutSql = sequelize.define('CabinLayout', {
+export const FleetUnitSql = sequelize.define('FleetUnit', {
     id: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -24,15 +24,24 @@ export const CabinLayoutSql = sequelize.define('CabinLayout', {
         allowNull: false,
         primaryKey: true
     },
-    width: {
-        type: DataTypes.DOUBLE
+    tailNumber: {
+        type: DataTypes.STRING
     },
-    length: {
-        type: DataTypes.DOUBLE
+    model: {
+        type: DataTypes.STRING
     },
-    layout:{
-        type: DataTypes.JSON
-    }
+    manufacturingDate: {
+        type: DataTypes.DATE
+    },
+    nextMaintenanceDate: {
+        type: DataTypes.DATE
+    },
+    purchaseDate: {
+        type: DataTypes.DATE
+    },
+    cabinLayoutId: {
+        type: DataTypes.STRING
+    },
 }, {
     // Other model options go here
 });

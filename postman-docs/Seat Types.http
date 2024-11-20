@@ -1,0 +1,62 @@
+# Seat Types
+
+###
+# @name Get all
+GET http://localhost:3000/seat-type
+
+###
+# @name Get type
+GET http://localhost:3000/seat-type/ECON-MILN
+
+###
+# @name Create
+POST http://localhost:3000/seat-type
+Content-Type: application/json
+
+{
+  "id": "ECON-MILN",
+  "type": "Super Seat",
+  "width": 450,
+  "height": 120,
+  "pitch": 172,
+  "weight": 216,
+  "productionDate": 3000,
+  "comfortLevel": 125,
+  "features": "The best ever",
+  "version": 1
+}
+
+###
+# @name Update
+PUT http://localhost:3000/seat-type/SUPER_SEAT
+Content-Type: application/json
+
+{
+  "id": "ECON-MILN",
+  "type": "Super Seat",
+  "width": 450,
+  "height": 120,
+  "pitch": 172,
+  "weight": 216,
+  "productionDate": 3000,
+  "comfortLevel": 125,
+  "features": "The best ever",
+  "version": 1
+}
+###
+# @name Delete type
+DELETE http://localhost:3000/seat-type/
+Content-Type: application/json
+
+{
+  "id": "1",
+  "type": "Super Seat",
+  "width": 450,
+  "height": 120,
+  "pitch": 172,
+  "weight": 216,
+  "productionDate": 3000,
+  "comfortLevel": 125,
+  "features": "The best ever",
+  "version": 1
+}
